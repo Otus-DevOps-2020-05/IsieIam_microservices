@@ -1,0 +1,20 @@
+---
+- name: Install Docker
+  hosts: all
+  become: true
+  tasks:
+  # обходим проблему блокировки dpkg
+  - name: Wait for /var/lib/dpkg/lock-frontend to be released
+    shell: while lsof /var/lib/dpkg/lock-frontend ; do sleep 10; done;
+  - name: Run the equivalent of "apt-get update" as a separate step
+    apt:
+      update_cache: yes
+  # непосредственно установка
+  - name: Install docker with addons
+    apt:
+      name: ['docker', 'docker-compose', 'python3-pip']
+      state: present
+  # устанавливаем модуль docker для pip
+  - name: install pip docker
+    pip:
+      name: docker

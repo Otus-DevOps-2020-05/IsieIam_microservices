@@ -1,0 +1,12 @@
+---
+- name: Start Docker container
+  hosts: all
+  become: true
+  tasks:
+  # запускаем контейнер
+  - name: Start container
+    docker_container:
+      name: monolith
+      image: isieiam/otus-reddit:1.0
+      ports:
+        - "9292:9292"

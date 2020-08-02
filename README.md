@@ -64,6 +64,40 @@ $ docker inspect <u_image_id>
 Сделано, пояснение занесено в файл.
 
 ### Задание со * №2:
---
+
+>Теперь, когда есть готовый образ с приложением, можно автоматизировать поднятие нескольких инстансов в Yandex Cloud, установку на них докера и запуск там образа /otus-reddit:1.0
+>Нужно реализовать в виде прототипа в директории /docker-monolith/infra/
+>Поднятие инстансов с помощью Terraform, их количество задается переменной;
+>Несколько плейбуков Ansible с использованием динамического инвентори для установки докера и запуска там образа приложения;
+>Шаблон пакера, который делает образ с уже установленным Docker;
+
+В каталоге docker-monolith/infra созданы 3 каталога
+ - каталог ansible - содержит в себе:
+```
+два playbook:
+packer_docker.yml - отвечает за создание packer-ом образа с установленным docker и python-docker.
+start_dockerc.yml - отвечает за запуск нужного контейнера
+слегка доработанный скрипт dynakic inventory
+get_inventory.py - который собирает инвентори из YC и группирует хосты по начальному имени инстанса до символа "-".
+```
+ - каталог packer - содержит в себе:
+```
+docker.json - описательная часть образа c provisioner packer_docker.yml
+variables.json.example - пример переменных
+```
+
+ - каталог terraform - содержит в себе:
+```
+main.tf - упрощенное создание инстансов с требуемым парамтером на кол-во
+файлы взятые с первого ДЗ по терраформу :)
+variables.tf
+output.tf
+```
+
+Для запуска:
+- из каталога infra packer build -var-file packer/variables.json packer/docker.json
+- смотрим id образа: yc compute image list и вставляем ее в terraform.tvars
+- в каталоге infra/terrafrom: terraform apply
+- и из каталога infra/ansible ansible-playbook ./playbooks/start_dockerc.yml
 
 </details>
