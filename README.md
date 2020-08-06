@@ -169,13 +169,21 @@ isieiam/post        1.0                 26eea89db2fd        2 hours ago         
 ```
 
 - проверено что приложение после манипуляций все еще работает.
+- для билда использовать(для памяти):
+
+```
+docker build -t isieiam/post:1.0 ./post-py
+docker build -t isieiam/comment:1.0u ./comment
+docker build -t isieiam/ui:2.0u ./ui
+```
+
 - для запуска использовать:
 
 ```
 docker run -d --network=reddit --network-alias=post_db --network-alias=comment_db mongo:latest
 docker run -d --network=reddit --network-alias=post isieiam/post:1.0
-docker run -d --network=reddit --network-alias=comment isieiam/comment:1.0
-docker run -d --network=reddit -p 9292:9292 isieiam/ui:2.0
+docker run -d --network=reddit --network-alias=comment isieiam/comment:1.0u
+docker run -d --network=reddit -p 9292:9292 isieiam/ui:2.0u
 ```
 
 </details>
