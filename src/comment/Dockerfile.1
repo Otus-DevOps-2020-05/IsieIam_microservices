@@ -1,0 +1,15 @@
+FROM ruby:2.5.8-alpine3.11
+
+ENV APP_HOME /app
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+COPY . $APP_HOME
+
+RUN apk update \
+    && apk add --no-cache build-base \
+    && bundle install \
+    && bundle clean --force && rm -rf ~/.bundle && apk del build-base
+
+ENV COMMENT_DATABASE_HOST comment_db
+ENV COMMENT_DATABASE comments
+CMD ["puma"]

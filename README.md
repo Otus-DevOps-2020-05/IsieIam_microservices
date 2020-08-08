@@ -109,3 +109,81 @@ output.tf
 - и из каталога infra/ansible: ansible-playbook ./playbooks/start_dockerc.yml
 
 </details>
+
+
+<details>
+<summary>Домашнее задание к лекции №18 (Docker образы. Микросервисы)
+</summary>
+
+### Задание:
+
+ - Разбит Monolith на 3 микросервиса в Docker
+ - docker файлы прогнаны через web lint-сервис: https://hadolint.github.io/hadolint/ что увидел поправил, за исключением версий пакетов у apt :)
+ - Сервисы запущены на YC через docker-machine и проверена работоспособность
+ - Оптимизированы(удалены лишние команды, схлопнуты часть слоев, подчищены временные файлы, кешы, удалены ненужные пакеты) образы на базе предложенных начальных образов (за исключением post - там вроде уже особо некуда)
+ - к mongo подключен volume, проверено сохранение данных при рестарте контейнера.
+
+### Задание со * №1:
+
+>Запустите контейнеры с другими сетевыми алиасами
+
+>Адреса для взаимодействия контейнеров задаются через ENV - переменные внутри Dockerfile 'ов
+
+>При запуске контейнеров ( docker run ) задайте им переменные окружения соответствующие новым сетевым алиасам, не пересоздавая образ
+
+>Проверьте работоспособность сервиса
+
+Контейнеры запустить можно так:
+```
+docker run -d --network=reddit --network-alias=post_db_n --network-alias=comment_db_n mongo:latest
+docker run -d --network=reddit --network-alias=post_n --env POST_DATABASE_HOST=post_db_n isieiam/post:1.0
+docker run -d --network=reddit --network-alias=comment_n --env COMMENT_DATABASE_HOST=comment_db_n isieiam/comment:1.0
+docker run -d --network=reddit -p 9292:9292 --env COMMENT_SERVICE_HOST=comment_n --env POST_SERVICE_HOST=post_n isieiam/ui:1.0
+```
+
+т.е. поменялись alias и переопределились env переменные на новые alias
+
+### Задание со * №2:
+
+>Попробуйте собрать образ на основе Alpine Linux
+>Придумайте еще способы уменьшить размер образа
+>Можете реализовать как только для UI сервиса, так и для остальных ( post , comment )
+>Все оптимизации проводите в Dockerfile сервиса. Дополнительные варианты решения уменьшения размера образов можете оформить в виде файла Dockerfile.<цифра> в папке сервиса
+
+ui и comment переведены на ruby-alpine образ (не самый актуальный, т.к. версия bundle нужна старая по requirements) и дополнительно часть слоев схлопнута.
+
+Общий принцип - все что добавляет "байты" в слое, желательно в этом же слое и подчищать :)
+
+Созданы Dockerfile.1 для ui и comment и результат примерно следующий:
+- версии 1.0/2.0 - это оптимизация на базе дефолтного начального образа
+- версии 1.0u/2.0u - это образ alpine + оптимизация по слоям с очисткой
+
+```
+REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
+isieiam/comment     1.0u                0076875e1a3b        4 seconds ago        70.4MB
+isieiam/comment     1.0                 8b2ed232ac1b        About a minute ago   737MB
+isieiam/ui          2.0u                0c3d3cc120f8        23 minutes ago       72.5MB
+isieiam/ui          2.0                 f4ebe5fe7d37        24 minutes ago       199MB
+isieiam/ui          1.0                 60566ef44aef        2 hours ago          760MB
+isieiam/post        1.0                 26eea89db2fd        2 hours ago          110MB
+```
+
+- проверено что приложение после манипуляций все еще работает.
+- для билда использовать(для памяти):
+
+```
+docker build -t isieiam/post:1.0 ./post-py
+docker build -t isieiam/comment:1.0u ./comment
+docker build -t isieiam/ui:2.0u ./ui
+```
+
+- для запуска использовать:
+
+```
+docker run -d --network=reddit --network-alias=post_db --network-alias=comment_db mongo:latest
+docker run -d --network=reddit --network-alias=post isieiam/post:1.0
+docker run -d --network=reddit --network-alias=comment isieiam/comment:1.0u
+docker run -d --network=reddit -p 9292:9292 isieiam/ui:2.0u
+```
+
+</details>
