@@ -187,3 +187,84 @@ docker run -d --network=reddit -p 9292:9292 isieiam/ui:2.0u
 ```
 
 </details>
+
+<details>
+<summary>Домашнее задание к лекции №19 (Сетевое взаимодействие Docker контейнеров. Docker Compose. Тестирование образов)
+</summary>
+
+### Задание:
+
+- Изучена работа сетей докера (none, host, bridge):
+
+<details>
+<summary>Мини-задания
+</summary>
+>Запустите несколько раз (2-4)
+>docker run --network host -d nginx
+>Каков результат? Что выдал docker ps? Как думаете почему?
+
+что запущен всего 1 контейнер, т.к.(надо просто посмотреть в логи, остановленных контейнеров nginx :)):
+```
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+2020/08/09 18:26:29 [emerg] 1#1: bind() to [::]:80 failed (98: Address already in use)
+```
+
+>Повторите запуски контейнеров с использованием драйверов none и host и посмотрите, как меняется список namespace-ов.
+
+Основное отличие, что на none - на каждый запуск контейнера генериртся новый namespace.
+</details>
+
+- Создана сеть типа bridge и запущены в ней наши контейнеры.
+
+```
+docker run -d --network=reddit --network-alias=post_db --network-alias=comment_db mongo:latest
+docker run -d --network=reddit --network-alias=post isieiam/post:1.0
+docker run -d --network=reddit --network-alias=comment  isieiam/comment:1.0
+docker run -d --network=reddit -p 9292:9292 isieiam/ui:1.0
+```
+
+- Проверена работа alias и реализован запуск контейнров в разных сетях
+
+```
+docker run -d --network=front_net -p 9292:9292 --name ui  isieiam/ui:1.0
+docker run -d --network=back_net --name comment  isieiam/comment:1.0
+docker run -d --network=back_net --name post  isieiam/post:1.0
+docker run -d --network=back_net --name mongo_db --network-alias=post_db --network-alias=comment_db mongo:latest
+docker network connect front_net post
+docker network connect front_net comment
+```
+
+- Изучено что происходит с сетевым стеком ОС при создании и использовании сетей docker.
+- Docker-compose: проверена работоспособность compose файла для нашего сервиса.
+- Добавлено и проверено использование env переменных.
+- Изменен docker-compose под кейс с множеством сетей, сетевых алиасов.
+- Параметризован docker-compose через .env файл (порт публикации сервиса ui, версии сервисов) - в репо добавлен файл шаблона для .env. Проверена работоспособность.
+- В переменные окружения добавлено переназначение имени проекта:
+
+>Узнайте как образуется базовое имя проекта. Можно ли его задать? Если можно то как?
+
+Инфо об имени проекта есть тут:
+https://docs.docker.com/compose/reference/envvars/#compose_project_name
+и тут:
+https://docs.docker.com/compose/reference/overview/
+Если кратко, то проект именуется по имени каталога, но можно переопеределить или через -p ключ или через переменную окружения:
+```
+Each configuration has a project name. If you supply a -p flag, you can specify a project name. If you don’t specify the flag, Compose uses the current directory name
+```
+
+### Задание со *:
+
+>Создайте docker-compose.override.yml для reddit проекта, который позволит
+
+Создан файл docker-compose.override.yml, который вызывается автоматом при вызове docker-compose up.
+Можно его переименовать и вызывать через ключ -f. Вкачестве подсказки воспользоваться можно статьей OTUS https://habr.com/ru/company/otus/blog/337688/
+
+>Изменять код каждого из приложений, не выполняя сборку образа
+
+Реализовано через вариант монтирования локального каталога с исходниками. Но в текущем примере(с удаленным docker host) - это просто так работать не будет - надо либо docker-compose запускать локально, либо переносить исходники на удаленный host.
+
+>Запускать puma для руби приложений в дебаг режиме с двумя воркерами (флаги --debug и -w 2)
+
+Добавлено через command внутри override.
+
+</details>
