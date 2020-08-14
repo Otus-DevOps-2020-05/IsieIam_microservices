@@ -199,11 +199,11 @@ docker run -d --network=reddit -p 9292:9292 isieiam/ui:2.0u
 <details>
 <summary>Мини-задания
 </summary>
->Запустите несколько раз (2-4)
->docker run --network host -d nginx
+
+>Запустите несколько раз (2-4) docker run --network host -d nginx
 >Каков результат? Что выдал docker ps? Как думаете почему?
 
-что запущен всего 1 контейнер, т.к.(надо просто посмотреть в логи, остановленных контейнеров nginx :)):
+Результат: запущен всего 1 контейнер, т.к.(надо просто посмотреть в логи, остановленных контейнеров nginx :)):
 ```
 nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
 2020/08/09 18:26:29 [emerg] 1#1: bind() to [::]:80 failed (98: Address already in use)
