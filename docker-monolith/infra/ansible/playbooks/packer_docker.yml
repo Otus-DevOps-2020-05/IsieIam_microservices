@@ -12,7 +12,7 @@
   # непосредственно установка
   - name: Install docker with addons
     apt:
-      name: ['docker', 'docker-compose', 'python3-pip']
+      name: ['docker-compose', 'python3-pip']
       state: present
   # устанавливаем модуль docker для pip
   - name: install pip docker
