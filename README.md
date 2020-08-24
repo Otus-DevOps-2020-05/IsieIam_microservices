@@ -268,3 +268,21 @@ Each configuration has a project name. If you supply a -p flag, you can specify 
 Добавлено через command внутри override.
 
 </details>
+
+<details>
+<summary>Домашнее задание к лекции №21 (Устройство Gitlab CI. Построение процесса непрерывной интеграции)
+</summary>
+
+### Задание:
+
+- Развернута vm(через соседний packer c docker-ом и terraform).
+- Используя docker-compose.yml развернут gitlab
+- В gitlab проведены базовые настройки, создана группа и проект.
+- Добавлен remote с проектом на gitlab к локальному репо.
+- Создан .gitlab-ci.yml
+- Добавлен и настроен runner
+- Проверена работа pipeline-ов gitlab-а.
+- Добавлены окружения, проверена работа пайплайнов с окружениями. Изучены и опробованы дианмические окружения.
+- Опробована работа с тегами.
+
+</details>
