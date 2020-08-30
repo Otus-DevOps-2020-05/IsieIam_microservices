@@ -27,7 +27,7 @@ services:
       - front_net
 
   prometheus:
-    image: ${DH_USERNAME}/prometheus
+    image: ${DH_USERNAME}/prometheus:${PROMETHEUS_VERSION}
     ports:
       - '9090:9090'
     volumes:
@@ -53,6 +53,13 @@ services:
       - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
     networks:
       - front_net
+      - back_net
+
+  mongodb-exporter:
+    image: ${DH_USERNAME}/mongodb_exporter:${DBE_VERSION}
+    environment:
+      - MONGODB_URI=mongodb://post_db:27017
+    networks:
       - back_net
 
 volumes:

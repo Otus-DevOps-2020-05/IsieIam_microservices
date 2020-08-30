@@ -301,8 +301,15 @@ Each configuration has a project name. If you supply a -p flag, you can specify 
 - Изучена работа healthcheck-ов.
 - Добавлен Node exporter в docker-compose и настройка на его мониторинг в prometheus, изучен мониторинг хоста.
 
-### Задание со *:
+### Задание со * №1:
 
-- todo
+>Добавьте в Prometheus мониторинг MongoDB с использованием необходимого экспортера.
+
+- Найдено и изучено: https://github.com/percona/mongodb_exporter
+- Взят из перконы dockerfile, модифицирован под скачивание исходников mongodb_exporter и создан ./monitoring/mongodb_exporter/Dockerfile
+- Образ mongodb_exporter собран свой и закинут на докерхаб https://hub.docker.com/repository/docker/isieiam/mongodb_exporter
+- Добавлены настройки с mongodb_exporter в конфиг prometheus и доп сервис в docker-compose.yml.
+- Проверена работоспособность - все ок - target появился, метрики есть.
+
 
 </details>
