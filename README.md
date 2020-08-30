@@ -311,5 +311,11 @@ Each configuration has a project name. If you supply a -p flag, you can specify 
 - Добавлены настройки с mongodb_exporter в конфиг prometheus и доп сервис в docker-compose.yml.
 - Проверена работоспособность - все ок - target появился, метрики есть.
 
+### Задание со * №2:
+
+>Добавьте в Prometheus мониторинг сервисов comment, post, ui с помощью Blackbox exporter
+
+
+
 
 </details>
