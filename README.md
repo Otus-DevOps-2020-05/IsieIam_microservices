@@ -301,4 +301,8 @@ Each configuration has a project name. If you supply a -p flag, you can specify 
 - Изучена работа healthcheck-ов.
 - Добавлен Node exporter в docker-compose и настройка на его мониторинг в prometheus, изучен мониторинг хоста.
 
+### Задание со *:
+
+- todo
+
 </details>
