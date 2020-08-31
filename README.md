@@ -302,7 +302,8 @@ Each configuration has a project name. If you supply a -p flag, you can specify 
 - Добавлен Node exporter в docker-compose и настройка на его мониторинг в prometheus, изучен мониторинг хоста.
 
 <details>
-<summary>Вспомогательные команды:</summary>
+<summary>Вспомогательные команды</summary>
+
 ```
 yc compute instance create \
   --name docker-host \
