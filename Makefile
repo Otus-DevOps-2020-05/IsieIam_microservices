@@ -1,7 +1,7 @@
 # дефолтное действие/цель - help :)
 .DEFAULT_GOAL := help
 # переменные с путями и версиями
-DH_USERNAME = isieiam
+#DH_USERNAME = имя DH пользователя или адрес репо
 BBOX_PATH = monitoring/blackbox_exporter/
 BBOX_VERSION = 1.0
 DBE_PATH = monitoring/mongodb_exporter/
