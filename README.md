@@ -301,6 +301,31 @@ Each configuration has a project name. If you supply a -p flag, you can specify 
 - Изучена работа healthcheck-ов.
 - Добавлен Node exporter в docker-compose и настройка на его мониторинг в prometheus, изучен мониторинг хоста.
 
+<details>
+<summary>Вспомогательные команды:</summary>
+```
+yc compute instance create \
+  --name docker-host \
+  --zone ru-central1-a \
+  --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
+  --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 \
+  --ssh-key ~/.ssh/appuser.pub
+
+docker-machine create \
+  --driver generic \
+  --generic-ip-address=84.201.128.170 \
+  --generic-ssh-user yc-user \
+  --generic-ssh-key ~/.ssh/appuser \
+  docker-host
+
+eval $(docker-machine env docker-host)
+
+docker-machine rm docker-host
+yc compute instance delete docker-host
+
+```
+</details>
+
 ### Задание со * №1:
 
 >Добавьте в Prometheus мониторинг MongoDB с использованием необходимого экспортера.
@@ -315,7 +340,28 @@ Each configuration has a project name. If you supply a -p flag, you can specify 
 
 >Добавьте в Prometheus мониторинг сервисов comment, post, ui с помощью Blackbox exporter
 
+- взят образ с последней версией blackbox отсюда: https://hub.docker.com/r/prom/blackbox-exporter/tags
+- изучено https://github.com/prometheus/blackbox_exporter/blob/master/README.md
+- написаны ./monitoring/blackbox_exporter/dockerfile, blackbox.yml и собран образ blackbox и отправлен на докерхаб
+- в конфиг prometheus добавлены два job-a: проверка по http ui и проверка портов tcp остальных сервисов
+- проверена работоспособность: наличие таргетов, наличие метрик и их корректное поведение на состояние сервисов
 
+>Для памяти: статус target blackbox не отображает статус метрики https://github.com/prometheus/blackbox_exporter/issues/79
 
+### Задание со * №3:
+
+>Задание: Напишите Makefile , который в минимальном варианте умеет:
+>- Билдить любой или все образы, которые сейчас используются
+>- Умеет пушить их в докер хаб
+
+- Нагуглено и изучено: https://ealebed.github.io/posts/2017/использование-make-для-управления-docker-контейнерами/
+- Создан Makefile, который умеет билдить и пушить образы (вход на докер хаб надо делать отдельно :) )
+- Применение:
+
+```
+make или make help выдают список возможных билдов и пушей
+make all билдит все
+make pushall пушит все
+```
 
 </details>

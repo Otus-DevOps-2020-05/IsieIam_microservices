@@ -62,6 +62,13 @@ services:
     networks:
       - back_net
 
+  blackbox-exporter:
+    image: ${DH_USERNAME}/blackbox_exporter:${BBOX_VERSION}
+    command: '--config.file=/etc/blackbox_exporter/config.yml'
+    networks:
+      - front_net
+      - back_net
+
 volumes:
   post_db:
   prometheus_data:
