@@ -366,3 +366,46 @@ make pushall пушит все
 ```
 
 </details>
+
+<details>
+<summary>Домашнее задание к лекции №24 (Мониторинг приложения и инфраструктуры)
+</summary>
+
+### Задание:
+
+- Разделен docker-compose.yml на docker-compose.yml и docker-compose-monitoring.yml
+- Добавлен в compose и запущен cAdvisor в сервисы докера и в настройки prometheus. Изучено его GUI.
+- Добавлена в compose и настроена на prometheus grafana.
+- Скачан и импортирован в grafana дашборд "docker and system monitoring".(добавлен в каталог с дашбордами grafana DockerMonitoring.json)
+- Создан дашборд UI_Service_Monitoring и в него добавлены графики по метрикам приложения:
+
+```
+Графики:
+- Rate of UI request count ("rate(ui_request_count[1m])")
+- Rate of UI requests count with error ("rate(ui_request_count{http_status=~\"^[45].*\"}[1m])")
+- HTTP responce time of 95% ("histogram_quantile(0.95, sum(rate(ui_request_response_time_bucket[5m])) by(le))")
+файл дашборда в директории monitoring/grafana/dashboards с названием UI_Service_Monitoring.json
+```
+
+- Создан дашборд Business_Logic_Monitoring с графиками:
+
+```
+- Posts Rate ("rate(post_count[1h])")
+- Comments Rate ("rate(comment_count[1h])")
+!!! Внимание, метрики может не быть, если она ни разу не возникла, т.е. она даже в списке прометея выпадать не будет.
+```
+
+- Создан, настроен и запущен Alertmanager(создан конфиг с уведомлениями в slack, настроен prometheus(конфиг + добавлен alerts.yml))
+- Проверена работа alert в свой канал в slack-е (для настройки использована инструкция https://rtfm.co.ua/nagios-nastrojka-uvedomlenij-v-slack-chat/)
+- Запушены образы на докерхаб (у alertmanager хук закрашен fake данными)
+- ссылка на докерхаб с образами: https://hub.docker.com/u/isieiam
+
+### Задание со * №1:
+
+>Если в прошлом ДЗ вы реализовали Makefile, добавьте в него билд и публикацию добавленных в этом ДЗ сервисов;
+
+- добавлен alermanager на build, push
+- добавлен функционал запуска и остановки сервиса и мониторинга
+
+
+</details>
