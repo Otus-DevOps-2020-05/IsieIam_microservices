@@ -74,3 +74,10 @@ scrape_configs:
     static_configs:
       - targets:
         - 'cadvisor:8080'
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['84.201.134.122:9323']
+  - job_name: 'telegraf'
+    static_configs:
+      - targets:
+        - 'telegraf:9273'

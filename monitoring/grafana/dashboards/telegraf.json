@@ -85,7 +85,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(comment_count[1h])",
+          "expr": "rate(docker_container_status_uptime_ns[5m])",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -94,7 +94,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Comments Rate",
+      "title": "docker_container_status_uptime_ns",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -164,16 +164,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(post_count[1h])",
+          "expr": "rate(docker_container_cpu_usage_total[5m])",
           "format": "time_series",
           "intervalFactor": 1,
+          "legendFormat": "",
           "refId": "A"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Posts Rate",
+      "title": "docker_container_cpu_usage_total",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -214,7 +215,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -243,7 +244,7 @@
     ]
   },
   "timezone": "",
-  "title": "Business_Logic_Monitoring",
-  "uid": "Lua4ILvMk",
-  "version": 2
+  "title": "telegraf",
+  "uid": "L78wCsvMz",
+  "version": 1
 }

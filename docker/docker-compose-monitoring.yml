@@ -54,7 +54,8 @@ services:
     networks:
       - back_net
   grafana:
-    image: grafana/grafana:5.0.0
+    #image: grafana/grafana:5.0.0
+    image: ${DH_USERNAME}/grafana:1.0
     volumes:
       - grafana_data:/var/lib/grafana
     environment:
@@ -74,7 +75,12 @@ services:
       - 9093:9093
     networks:
       - back_net
-
+  telegraf:
+    image: ${DH_USERNAME}/telegraf:1.0
+    networks:
+      - back_net
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
 
 volumes:
   grafana_data:

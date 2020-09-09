@@ -10,6 +10,10 @@ PROMETHEUS_PATH = monitoring/prometheus/
 PROMETHEUS_VERSION = 1.0
 ALERT_PATH = monitoring/alertmanager/
 ALERT_VERSION = 1.0
+TELEGRAF_PATH = monitoring/telegraf/
+TELEGRAF_VERSION = 1.0
+GRAFANA_PATH = monitoring/grafana/
+GRAFANA_VERSION = 1.0
 COMMENT_PATH = src/comment/
 COMMENT_VERSION = 1.0
 POST_PATH = src/post-py/
@@ -21,7 +25,7 @@ help:
 # Волшебная строка ниже выводит описание целей
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
 # основная цель для build, состоящая из списка целей
-all: comment post ui blackbox-exporter mongodb-exporter prometheus alertmanager
+all: comment post ui blackbox-exporter mongodb-exporter prometheus alertmanager telegraf grafana
 
 # Перечисление подцелей из списка:
 # По наличию ## формируется список для help, обязательная табуляция перед командой(mc двойной tab)
@@ -47,8 +51,14 @@ prometheus: ## Build prometheus
 alertmanager: ## Build alertmanager
 	docker build -t $(DH_USERNAME)/alertmanager:$(ALERT_VERSION) $(ALERT_PATH)
 
+telegraf: ## Build telegraf
+	docker build -t $(DH_USERNAME)/telegraf:$(TELEGRAF_VERSION) $(TELEGRAF_PATH)
+
+grafana: ## Build grafana
+	docker build -t $(DH_USERNAME)/grafana:$(GRAFANA_VERSION) $(GRAFANA_PATH)
+
 # push all
-pushall: push-comment push-post push-ui push-bbe push-mdbe push-pro
+pushall: push-comment push-post push-ui push-bbe push-mdbe push-pro push-ale push-tele push-graf
 push-comment: ## push comment
 	docker push $(DH_USERNAME)/comment:$(COMMENT_VERSION)
 
@@ -69,6 +79,12 @@ push-pro: ## push prometheus
 
 push-ale: ## push alertmanager
 	docker push $(DH_USERNAME)/alertmanager:$(ALERT_VERSION)
+
+push-tele: ## push telegraf
+	docker push $(DH_USERNAME)/telegraf:$(TELEGRAF_VERSION)
+
+push-graf: ## push grafana
+	docker push $(DH_USERNAME)/grafana:$(GRAFANA_VERSION)
 
 # run all
 run-all: run-service run-monitoring

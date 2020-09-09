@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_PROMETHEUS_SERVER",
-      "label": "Prometheus Server",
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
@@ -53,7 +53,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS_SERVER}",
+      "datasource": "${DS_PROMETHEUS}",
       "fill": 1,
       "gridPos": {
         "h": 9,
@@ -132,7 +132,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS_SERVER}",
+      "datasource": "${DS_PROMETHEUS}",
       "fill": 1,
       "gridPos": {
         "h": 9,
@@ -211,7 +211,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS_SERVER}",
+      "datasource": "${DS_PROMETHEUS}",
       "fill": 1,
       "gridPos": {
         "h": 9,
