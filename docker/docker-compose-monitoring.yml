@@ -1,0 +1,97 @@
+version: '3.3'
+services:
+  prometheus:
+    image: ${DH_USERNAME}/prometheus:${PROMETHEUS_VERSION}
+    ports:
+      - '9090:9090'
+    volumes:
+      - prometheus_data:/prometheus
+    command: # Передаем доп параметры в командной строке
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
+    networks:
+      - front_net
+      - back_net
+
+  node-exporter:
+    image: prom/node-exporter:v0.15.2
+    user: root
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+    networks:
+      - front_net
+      - back_net
+
+  mongodb-exporter:
+    image: ${DH_USERNAME}/mongodb_exporter:${DBE_VERSION}
+    environment:
+      - MONGODB_URI=mongodb://post_db:27017
+    networks:
+      - back_net
+
+  blackbox-exporter:
+    image: ${DH_USERNAME}/blackbox_exporter:${BBOX_VERSION}
+    command: '--config.file=/etc/blackbox_exporter/config.yml'
+    networks:
+      - front_net
+      - back_net
+  cadvisor:
+    image: google/cadvisor:v0.29.0
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run:/var/run:rw'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro'
+    ports:
+      - '8080:8080'
+    networks:
+      - back_net
+  grafana:
+    #image: grafana/grafana:5.0.0
+    image: ${DH_USERNAME}/grafana:1.0
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_SECRET}
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    networks:
+      - back_net
+  alertmanager:
+    image: ${DH_USERNAME}/alertmanager:1.0
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+    ports:
+      - 9093:9093
+    networks:
+      - back_net
+  telegraf:
+    image: ${DH_USERNAME}/telegraf:1.0
+    networks:
+      - back_net
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+
+volumes:
+  grafana_data:
+  prometheus_data:
+
+networks:
+  back_net:
+#    ipam:
+#      config:
+#        - subnet: "10.0.2.0/24"
+  front_net:
+#    ipam:
+#      config:
+#        - subnet: "10.0.1.0/24"

@@ -366,3 +366,87 @@ make pushall пушит все
 ```
 
 </details>
+
+<details>
+<summary>Домашнее задание к лекции №24 (Мониторинг приложения и инфраструктуры)
+</summary>
+
+### Задание:
+
+- Разделен docker-compose.yml на docker-compose.yml и docker-compose-monitoring.yml
+- Добавлен в compose и запущен cAdvisor в сервисы докера и в настройки prometheus. Изучено его GUI.
+- Добавлена в compose и настроена на prometheus grafana.
+- Скачан и импортирован в grafana дашборд "docker and system monitoring".(добавлен в каталог с дашбордами grafana DockerMonitoring.json)
+- Создан дашборд UI_Service_Monitoring и в него добавлены графики по метрикам приложения:
+
+```
+Графики:
+- Rate of UI request count ("rate(ui_request_count[1m])")
+- Rate of UI requests count with error ("rate(ui_request_count{http_status=~\"^[45].*\"}[1m])")
+- HTTP responce time of 95% ("histogram_quantile(0.95, sum(rate(ui_request_response_time_bucket[5m])) by(le))")
+файл дашборда в директории monitoring/grafana/dashboards с названием UI_Service_Monitoring.json
+```
+
+- Создан дашборд Business_Logic_Monitoring с графиками:
+
+```
+- Posts Rate ("rate(post_count[1h])")
+- Comments Rate ("rate(comment_count[1h])")
+!!! Внимание, метрики может не быть, если она ни разу не возникла, т.е. она даже в списке прометея выпадать не будет.
+```
+
+- Создан, настроен и запущен Alertmanager(создан конфиг с уведомлениями в slack, настроен prometheus(конфиг + добавлен alerts.yml))
+- Проверена работа alert в свой канал в slack-е (для настройки использована инструкция https://rtfm.co.ua/nagios-nastrojka-uvedomlenij-v-slack-chat/)
+- Запушены образы на докерхаб (у alertmanager хук закрашен fake данными)
+- ссылка на докерхаб с образами: https://hub.docker.com/u/isieiam
+
+### Задание со *:
+
+>Если в прошлом ДЗ вы реализовали Makefile, добавьте в него билд и публикацию добавленных в этом ДЗ сервисов;
+
+- добавлен alermanager, grafana(с ней конечно спорно, по идее дашборды надо хранить в гите и при старте контейнера подключать их как configmap) на build, push
+- добавлен функционал запуска и остановки сервиса и мониторинга
+
+>В Docker в экспериментальном режиме реализована отдача метрик в формате Prometheus. Добавьте сбор этих метрик в Prometheus. Сравните количество метрик с Cadvisor. Выберите готовый дашборд или создайте свой для этого источника данных. Выгрузите его в monitoring/grafana/dashboards;
+
+- Изучено: https://docs.docker.com/config/daemon/prometheus/ добавлено на докер хосте настройка в daemon.json(правда вместо localhost указан 0.0.0.0).
+- Добавлена настройка в prometheus по внешнему ip(не очень хорошо, но не вижу применения на практике такой комбинации когда есть cadvisor).
+- На глаз метрик меньше чем у cadvisor.
+- Добавлен общедоступный дашборд - docker_engine_metrics.
+
+>Для сбора метрик с Docker демона также можно использовать Telegraf от InfluxDB. Добавьте сбор этих метрик в Prometheus. Сравните количество метрик с Cadvisor. Выберите готовый дашборд или создайте свой для этого источника данных. Выгрузите его в monitoring/grafana/dashboards;
+
+- Изучено: https://hub.docker.com/_/telegraf и https://github.com/influxdata/telegraf/tree/master/plugins/outputs/prometheus_client
+- Создан докер-файл, простейший конфиг для telegraf с использованием плагина для докера.
+- сбилжен и запушен образ telegraf, добавлен в make, добавлен конфиг в prometheus и docker-compose-monitoring
+- собрана простенькая витринка telegraf для grafana(uptime и загрузка cpu контейнерами).
+
+>Придумайте и реализуйте другие алерты, например на 95 процентиль времени ответа UI, который рассмотрен выше; Настройте интеграцию Alertmanager с e-mail помимо слака;
+
+- алерт на 95 процентиль сделан, добавил фейковое значение для проверки срабатывания.
+- по интеграции с e-mail только посмотрел примеры: https://prometheus.io/docs/alerting/latest/configuration/ - в принципе все просто, но как сделать это более менее безопасно, без явного указания логина пока непонятно.
+
+### Задание с **:
+
+>В Grafana 5.0 была добавлена возможность описать в конфигурационных файлах источники данных и дашборды. Реализуйте автоматическое добавление источника данных и созданных в данном ДЗ дашбордов вграфану;
+
+- изучено https://ops.tips/blog/initialize-grafana-with-preconfigured-dashboards/ и https://superuser.com/questions/1477291/grafana-provisioning-dashboards-in-docker
+- создан каталог ./monitoring/grafana/provisioning в нем каталог для datasources и каталог dashboards, где согласно инструкицям из статей добавлены необходимые настройки.
+```
+Есть какой то глюк с ненахождение datasource, причем при втором пересохранении дашбордов не случился, непонятно, гуглится, говорят исправлено в новых версиях.
+```
+
+>Реализуйте сбор метрик со Stackdriver, в PR опишите, какие метрики удалось собрать;
+
+- не делал: принцип понятен, добавлять еще один доп источник метрик уже не интересно :)
+
+>Придумайте свои метрики приложения/бизнес метрики и реализуйте их в коде приложения. Опишите в PR что было добавлено;
+
+- не делал: изучил код, посмотрел как создаются метрики
+
+### Задание с ***:
+
+- не делал
+
+
+</details>

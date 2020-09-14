@@ -16,3 +16,4 @@ vault.key
 .pytest_cache
 ansible/roles/ansible_role_mongo
 .env
+.realconfig.yml
