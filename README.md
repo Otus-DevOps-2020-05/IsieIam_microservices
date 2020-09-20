@@ -523,4 +523,19 @@ post-deployment-74f87495b4-b9fbz     1/1     Running   0          101s
 ui-deployment-69c87bd688-hcgld       1/1     Running   0          55s
 ```
 
+### Задание c *:
+
+>Описать установку компонентов Kubernetes из THW в виде Ansibleплейбуков в папке kubernetes/ansible; Задание достаточно выполнить в виде Proof of Concept, просто автоматизация некоторых действий туториала.
+
+- Для примера создан playbook kubernetes/ansible/install_workers.yml для установки бинарников worker нод, но это больше Proof of Concept (не имеет смысла автоматизировать то, что уже сделано :) ).
+- Аналогично можно создать playbook и для мастер нод, и под разные этапы: копирование сертификатов, конфигов, настройка  и пр.
+- Дополнительно рассмотрены внешние варианты playbook-ов ansible:
+
+```
+- Вариант от Geerling:
+https://github.com/geerlingguy/ansible-role-kubernetes
+- Вариант от k8s:
+https://kubernetes.io/blog/2019/03/15/kubernetes-setup-using-ansible-and-vagrant/
+```
+
 </details>

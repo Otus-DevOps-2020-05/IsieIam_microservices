@@ -1,0 +1,68 @@
+---
+- name: Install k8s-workers
+  hosts: workers
+  become: true
+  tasks:
+
+  - name: Update and install
+    apt:
+      name: socat conntrack ipset
+      update_cache: yes
+
+  - name: disable-swap
+    command: swapoff -a
+
+  - name: Creates directories
+    file:
+      path: "{{ item }}"
+      state: directory
+    with_items:
+      - /etc/cni/net.d
+      - /opt/cni/bin
+      - /var/lib/kubelet
+      - /var/lib/kube-proxy
+      - /var/lib/kubernetes
+      - /var/run/kubernetes
+      - /root/containerd
+
+  - name: Download and Unarchive crictl
+    unarchive:
+      src: https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.15.0/crictl-v1.15.0-linux-amd64.tar.gz
+      dest: /usr/local/bin
+      remote_src: yes
+  - name: chmod crictl
+    file:
+      path: /usr/local/bin/crictl
+      mode: 0755
+
+  - name: Download and Unarchive cni
+    unarchive:
+      src: https://github.com/containernetworking/plugins/releases/download/v0.8.2/cni-plugins-linux-amd64-v0.8.2.tgz
+      dest: /opt/cni/bin/
+      remote_src: yes
+
+  - name: Download and Unarchive containerd
+    unarchive:
+      src: https://github.com/containerd/containerd/releases/download/v1.2.9/containerd-1.2.9.linux-amd64.tar.gz
+      dest: /root/containerd
+      remote_src: yes
+  - name: Move containerd files
+    command: mv /root/containerd/bin/* /bin/
+
+  - name: download runc
+    get_url:
+      url: https://github.com/opencontainers/runc/releases/download/v1.0.0-rc8/runc.amd64
+      dest: /usr/local/bin
+      mode: 0755
+  - name: rename runc
+    command: mv /usr/local/bin/runc.amd64 /usr/local/bin/runc
+
+  - name: download binaries kube
+    get_url:
+      url: https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/{{ item }}
+      dest: /usr/local/bin
+      mode: 0755
+    with_items:
+      - kubectl
+      - kube-proxy
+      - kubelet
