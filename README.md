@@ -452,7 +452,7 @@ make pushall пушит все
 </details>
 
 <details>
-<summary>Домашнее задание к лекции №25 (Применение системы логирования в инфраструктуре на основе Docker)
+<summary>Домашнее задание к лекции №26 (Применение системы логирования в инфраструктуре на основе Docker)
 </summary>
 
 ### Задание:
@@ -495,5 +495,47 @@ method= POST
 - Проблема два, увы, я не осилил понять в чем дело: проблемное приложение фейлится по таймауту в 30 сек с 500 ошибкой, если в бд нет ни одного поста. После того как запустил нормальное приложение, создал пост, то и проблемное нормально загрузилось с заложенной задержкой в 3сек. Закоментив задержку - все стало работать как обычно.
 
 ![Trace](src_bugged/trace.png)
+
+</details>
+
+<details>
+<summary>Домашнее задание к лекции №28 (Введение в Kubernetes)
+</summary>
+
+### Задание:
+
+> Пройти YC Kubernetes The Hard Way;
+
+- Выполнено (url The Hard Way https://gitlab.com/AlPervakov/yc-kubernetes-the-hart-way/-/tree/master).
+
+> Проверить, что kubectl apply -f <filename> проходит по созданным до этого eployment-ам (ui, post, mongo, comment) и поды запускаются;
+
+- Добавлены "наброски" deployment-ов для сервисов reddit, проверено, pod-ы запускаются:
+
+```
+isie@isie-VirtualBox:~/otus/IsieIam_microservices/kubernetes/reddit(kubernetes-1)$ kubectl get pods
+NAME                                 READY   STATUS    RESTARTS   AGE
+busybox                              1/1     Running   0          21m
+comment-deployment-7dd7bb55d-4ns6l   1/1     Running   0          61s
+mongo-deployment-86d49445c4-vg5gb    1/1     Running   0          3m51s
+nginx-554b9c67f9-qnkth               1/1     Running   0          17m
+post-deployment-74f87495b4-b9fbz     1/1     Running   0          101s
+ui-deployment-69c87bd688-hcgld       1/1     Running   0          55s
+```
+
+### Задание c *:
+
+>Описать установку компонентов Kubernetes из THW в виде Ansibleплейбуков в папке kubernetes/ansible; Задание достаточно выполнить в виде Proof of Concept, просто автоматизация некоторых действий туториала.
+
+- Для примера создан playbook kubernetes/ansible/install_workers.yml для установки бинарников worker нод, но это больше Proof of Concept (не имеет смысла автоматизировать то, что уже сделано :) ).
+- Аналогично можно создать playbook и для мастер нод, и под разные этапы: копирование сертификатов, конфигов, настройка  и пр.
+- Дополнительно рассмотрены внешние варианты playbook-ов ansible:
+
+```
+- Вариант от Geerling:
+https://github.com/geerlingguy/ansible-role-kubernetes
+- Вариант от k8s:
+https://kubernetes.io/blog/2019/03/15/kubernetes-setup-using-ansible-and-vagrant/
+```
 
 </details>
