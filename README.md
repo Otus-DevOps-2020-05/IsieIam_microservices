@@ -539,3 +539,36 @@ https://kubernetes.io/blog/2019/03/15/kubernetes-setup-using-ansible-and-vagrant
 ```
 
 </details>
+
+<details>
+<summary>Домашнее задание к лекции №29 (Основные модели безопасности и контроллеры в Kubernetes)
+</summary>
+
+### Задание:
+
+- Установлен и запущен minicube, в качестве provisioner использован docker: https://kubernetes.io/docs/tasks/tools/install-minikube/)
+
+```
+sudo -E minikube start --driver=none
+```
+
+- Дописаны deployment, service и dev-namespace для reddit
+- ознакомился с port-forwarding (для памяти команды)
+
+```
+$ kubectl get pods --selector component=ui
+$ kubectl port-forward <pod-name> 8080:9292
+```
+
+- Reddit развернут в minicube
+- Ознакомился на примерах с minicube dashboard (увы для provisioner docker, dashboard плагин пока нерабочий)
+- Создан кластер k8s в yandex облаке, в нем развернуто приложение reddit и проверена работоспособность приложения.
+
+```
+kubectl get nodes -o wide
+NAME                        STATUS   ROLES    AGE     VERSION   INTERNAL-IP   EXTERNAL-IP       OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME
+cl11amvft55754cj2e5a-ukec   Ready    <none>   9m4s    v1.17.8   10.130.0.12   178.154.227.240   Ubuntu 18.04.4 LTS   5.4.0-47-generic   docker://18.6.2
+cl11amvft55754cj2e5a-ydir   Ready    <none>   9m14s   v1.17.8   10.130.0.29   178.154.225.223   Ubuntu 18.04.4 LTS   5.4.0-47-generic   docker://18.6.2
+```
+
+</details>
