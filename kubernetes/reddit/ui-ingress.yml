@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ui
+#  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - secretName: ui
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ui
+          servicePort: 9292

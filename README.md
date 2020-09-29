@@ -572,3 +572,11 @@ cl11amvft55754cj2e5a-ydir   Ready    <none>   9m14s   v1.17.8   10.130.0.29   17
 ```
 
 </details>
+
+<details>
+<summary>Домашнее задание к лекции №30 (Ingress-контроллеры и сервисы в Kubernetes)
+</summary>
+
+### Задание:
+
+</details>
