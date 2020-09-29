@@ -579,4 +579,46 @@ cl11amvft55754cj2e5a-ydir   Ready    <none>   9m14s   v1.17.8   10.130.0.29   17
 
 ### Задание:
 
+- Рассмотрено сетевое взаимодействие компонентов в кластере.
+- Создан LoadBalancer (https://cloud.yandex.ru/docs/managed-kubernetes/operations/create-load-balancer)
+- Задеплоен ingress controller:
+
+```
+вспомогательные статьи:
+- https://kubernetes.github.io/ingress-nginx/deploy/
+- https://medium.com/@arturgspb/yandex-cloud-kubernates-with-ingress-loadbalancer-without-ssl-7d358f412daf
+- kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.35.0/deploy/static/provider/cloud/deploy.yaml
+по статье медиума: версия устарела, но принцип понятен
+ингресс с гитхаба - не все взлетает идеально, но основной под запускается и работает как предполагается
+```
+
+- Создан ingress проверена работоспособность.
+- Добавлен свой сертификат к ingress, правда у того ингресса, что пришел с гитхаба по дефолту есть fake k8s сертификат :)
+- Изучена работа network policy(главное не забыть правильно создать кластер - поставить нужную галочку) (https://cloud.yandex.ru/docs/managed-kubernetes/operations/running-network-policy)
+- Подправлен mongo-network-policy.yml так, чтобы post-сервис дошел до базы данных.
+- Изучена организация хранилищ в кластере (Volume, PV, PVC, SC):
+
+```
+Динамическое выделение:
+https://cloud.yandex.ru/docs/managed-kubernetes/operations/volumes/dynamic-create-pv
+Статическое:
+https://cloud.yandex.ru/docs/managed-kubernetes/operations/volumes/static-create-pv
+Классы:
+https://cloud.yandex.ru/docs/managed-kubernetes/operations/volumes/manage-storage-class
+!!! k8s не следит в данном случае, что создается первым при вызове "задеплой весь каталог": и если pvc создастся раньше storage class, то работать не будет и pvc надо пересоздать еще раз.
+```
+
+- Вспомогательные команды, чтобы не искать:
+
+```
+пересоздание контекста:
+yc managed-kubernetes cluster get-credentials otus-cluster --external --force
+деплой всего:
+kubectl apply -f ./kubernetes/reddit
+```
+
+### Задание *:
+
+ - Создан ui-ingress-secret.yml по инфо по ccылке с https://kubernetes.io/docs/concepts/services-networking/ingress/
+
 </details>
