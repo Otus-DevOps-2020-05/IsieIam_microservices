@@ -579,6 +579,7 @@ cl11amvft55754cj2e5a-ydir   Ready    <none>   9m14s   v1.17.8   10.130.0.29   17
 
 ### Задание:
 
+- Задания выполнялись в YC (PVC, PV, SC несколько отличаются, как и подход к ingress controller)
 - Рассмотрено сетевое взаимодействие компонентов в кластере.
 - Создан LoadBalancer (https://cloud.yandex.ru/docs/managed-kubernetes/operations/create-load-balancer)
 - Задеплоен ingress controller:
