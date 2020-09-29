@@ -6,7 +6,7 @@ metadata:
 #    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   tls:
-  - secretName: ui
+  - secretName: ui-ingress
   rules:
   - http:
       paths:
