@@ -663,7 +663,7 @@ kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.passwo
 
  - увы нормальной работы gitlab runner так и не удалось победить - он то запускается, то нет, то может скачать docker-dind то нет(kubernetes/Charts/gitlab2 - последний на текущий момент helm пакет gitlab подправленный под http).
  - В результате был развернут k8s в GCE, установлен gitlab-omnibus и все pipeline приложений уже запускались там.
- - Переписаны pipeline без autodevops(на последнем gitlab - они не запускаются :()
+ - Переписаны pipeline без autodevops(на последнем gitlab - кастомизированный autodevops не запускается :( )
  - Реализован разный деплой приложений: helm2, helm3, helm2plugin
  - Для памяти:
 
