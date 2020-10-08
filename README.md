@@ -668,7 +668,7 @@ kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.passwo
  - Для памяти:
 
 ```
-Собранные зависимости helm2 и helm3 несовместимы друг с другом, чтобы пересобрать зависимости (на нашем примере):
+Собранные зависимости helm2 и helm3 не совместимы друг с другом, чтобы пересобрать зависимости (на нашем примере):
 helm dep update ./reddit
 ```
 
