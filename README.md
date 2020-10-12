@@ -623,3 +623,71 @@ kubectl apply -f ./kubernetes/reddit
  - Создан ui-ingress-secret.yml по инфо по ccылке с https://kubernetes.io/docs/concepts/services-networking/ingress/
 
 </details>
+
+<details>
+<summary>Домашнее задание к лекции №31 (Интеграция Kubernetes в GitlabCI)
+</summary>
+
+### Задание:
+
+ - Установлен Helm2 + Tiller, Helm3
+ - Созданы chart-ы и template отдельных приложений.
+ - Разобрана подстановка переменных в template.
+ - Изучена работа зависимостей на примере приложения reddit (./kubernetes/Charts/reddit)
+ - Установлен последний gitlab в YC кластер :),
+ - Создана группа, проекты наших сервисов.
+ - Настроен ci для каждого приложения - под новую версию не забыть - чтобы runner вообще запустился нужно использовать image docker dind - иначе будет ошибка подключения к docker daemon.
+
+```
+На будущее/на память:
+Установка gitlab с отключенным tls:
+helm install gitlab . \
+  --set global.ingress.tls.enabled=false \
+  --set global.hosts.https=false \
+  --set certmanager-issuer.email=qq@yandex.ru
+
+Далее проверяем что все запустилось и получаем адрес ingress:
+kubectl get ingress
+kubectl get pods
+
+После чего запускаем реконфигуре,более красивое решение надо погуглить, но на имя домена в новом завязано почти все в том числе runner:
+helm upgrade gitlab . \
+  --set global.hosts.domain=84.201.181.199.xip.io \
+  --set global.ingress.tls.enabled=false \
+  --set global.hosts.https=false \
+  --set certmanager-issuer.email=qq@yandex.ru
+
+чтобы получить пароль root:
+kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
+```
+
+ - увы нормальной работы gitlab runner так и не удалось победить - он то запускается, то нет, то может скачать docker-dind то нет(kubernetes/Charts/gitlab2 - последний на текущий момент helm пакет gitlab подправленный под http).
+ - В результате был развернут k8s в GCE, установлен gitlab-omnibus и все pipeline приложений уже запускались там.
+ - Переписаны pipeline без autodevops(на последнем gitlab - кастомизированный autodevops не запускается :( )
+ - Реализован разный деплой приложений: helm2, helm3, helm2plugin
+ - Для памяти:
+
+```
+Собранные зависимости helm2 и helm3 не совместимы друг с другом, чтобы пересобрать зависимости (на нашем примере):
+helm dep update ./reddit
+```
+
+### Задание со *:
+
+>Сейчас у нас выкатка на staging и production - по нажатию кнопки. Свяжите пайплайны сборки образов и пайплайн деплоя на staging и production так, чтобы после релиза образа из ветки мастер запускался деплой уже новой версии приложения на production
+
+- Изучено: https://docs.gitlab.com/ee/ci/triggers/
+- создан триггер для репа reddit-deploy
+- создана доп переменная окружения DEPLOY_TOKEN для своей группы gitlab
+- Добавлен вызов триггера/хук/не хук в pipeline с костыликом в виде "узнай адрес гитлаба" через /etc/hosts:
+
+```
+  after_script:
+    - apk add -U curl
+    - echo "%GITLAB_IP gitlab-gitlab" >> /etc/hosts
+    - "curl -X POST -F token=$DEPLOY_TOKEN -F ref=master http://gitlab-gitlab/api/v4/projects/1/trigger/pipeline"
+```
+
+- Описание параметров curl есть по ссылке выше, допом сам адрес триггера будет указан на страничке его создания в настройках ci/cd нужного репа, для нашего примера: http://gitlab-gitlab/isieiam/reddit-deploy/settings/ci_cd
+
+</details>
